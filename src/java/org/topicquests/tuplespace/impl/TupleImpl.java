@@ -406,5 +406,9 @@ System.out.println("Tuple Match 4");
     public ITuple getMatch() {
       return this.matchTuple;
     }
+	@Override
+	public int compareTo(Object o) {
+		return this.getPriority()-((ITuple)o).getPriority();
+	}
 
 }

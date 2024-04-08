@@ -81,7 +81,7 @@ import com.sun.java.util.collections.Iterator;
  *			add direct support for priority -- done
  *			add support for fol match -- fieldNames() does this
  */
-public interface ITuple {
+public interface ITuple extends Comparable {
 
     /**
      * Features added to let ITuple know it's command -- put, take, read
@@ -111,7 +111,7 @@ public interface ITuple {
      */
     String getRequestId();
     void setRequestId(String id);
-
+    
 	/**
 	* Gets the tag associated with this ITuple.
 	* @return a String

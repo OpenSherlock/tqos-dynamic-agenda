@@ -59,6 +59,7 @@ package org.topicquests.tuplespace.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -68,15 +69,8 @@ import java.util.Set;
 
 import org.topicquests.tuplespace.api.ITuple;
 import org.topicquests.tuplespace.api.ITupleSpace;
-//import org.topicquests.tuplespace.api.ITupleSpaceListener;
-
-/* to compile for JDK 1.x, uncomment and link to Collections 1.1 lib
-import com.sun.java.util.collections.ArrayList;
-import com.sun.java.util.collections.Collections;
-import com.sun.java.util.collections.HashMap;
-import com.sun.java.util.collections.ListIterator;
-*/
-
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
 * This class implements a TupleSpace. This is the default
@@ -110,6 +104,8 @@ public final class TupleSpaceImpl implements ITupleSpace {
 	* A Map for holding Lists of Tuples.
 	*/
 	private Map tupleMap = new HashMap();
+	
+	private SortedSet<ITuple> myTuples;
 
 	/**
 	* A Map for holding Lists of Templates waiting to be matched.
@@ -127,6 +123,7 @@ public final class TupleSpaceImpl implements ITupleSpace {
 	*/
 	public TupleSpaceImpl(String name) {
 		this.spaceName = name;
+		this.myTuples = new TreeSet<ITuple>();
 	}
 
     /**
