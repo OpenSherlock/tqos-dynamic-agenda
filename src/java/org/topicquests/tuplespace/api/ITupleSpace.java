@@ -62,37 +62,21 @@ import java.util.Iterator;
 public interface ITupleSpace
 {
 
-    public ITuple extract(ITuple tuple, long l);
-
-    //public ITuple extractPrioritized(ITuple tuple, long l);
-
     public void insert(ITuple tuple);
 
-    //public void insertPrioritized(ITuple tuple);
-
     /**
      * @param antiTuple to match
      * @return ITuple or null
      */
-    public ITuple noWaitExtract(ITuple tuple);
+    ITuple noWaitRead(ITuple tuple);
 
-    //public ITuple noWaitExtractPrioritized(ITuple tuple);
+    ITuple read(ITuple tuple, long waitTime);
 
-    /**
-     * @param antiTuple to match
-     * @return ITuple or null
-     */
-    public ITuple noWaitRead(ITuple tuple);
 
-    //public abstract ITuple noWaitReadPrioritized(ITuple tuple);
+    ITuple take(ITuple tuple, long waitTime);
 
-    public ITuple read(ITuple tuple, long waitTime);
 
-   // public abstract ITuple readPrioritized(ITuple tuple, long l);
-
-    public abstract ITuple take(ITuple tuple, long waitTime);
-
-    public abstract List collect(ITuple tuple);
-
-    public Iterator tuples();
+    Iterator<ITuple> tuples();
+    
+    List<ITuple> collect(ITuple antiTup); 
 }

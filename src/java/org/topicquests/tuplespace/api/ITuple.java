@@ -83,45 +83,45 @@ import com.sun.java.util.collections.Iterator;
  */
 public interface ITuple {
 
-        /**
-         * Features added to let ITuple know it's command -- put, take, read
-         */
-        public String getCommand();
-        public void setCommand(String cmd);
-        /**
-         * Features added to let ITuple know it's ITupleSpace name
-         */
-        public String getSpace();
-        public void setSpace(String space);
+    /**
+     * Features added to let ITuple know it's command -- put, take, read
+     */
+    String getCommand();
+    void setCommand(String cmd);
+    /**
+     * Features added to let ITuple know it's ITupleSpace name
+     */
+    String getSpace();
+    void setSpace(String space);
 	/**
 	* Returns a copy of the ITuple. Essentially the same
 	* as clone(), but I needed to specify it in the interface.
 	* @return an exact replica of this ITuple
 	*/
-	public ITuple copy();
+	ITuple copy();
 
-        /**
-         * Timestamp support
-         */
-        public Timestamp getCreated();
-        public void setCreated(Timestamp ts);
+    /**
+     * Timestamp support
+     */
+    Timestamp getCreated();
+    void setCreated(Timestamp ts);
 
-        /**
-         * Transaction support <requestId>
-         */
-        public String getRequestId();
-        public void setRequestId(String id);
+    /**
+     * Transaction support <requestId>
+     */
+    String getRequestId();
+    void setRequestId(String id);
 
 	/**
 	* Gets the tag associated with this ITuple.
 	* @return a String
 	*/
-	public String getTag();
+	String getTag();
 
 	/**
 	 * Set the tag associated with this ITuple -- to allow recycling
 	 */
-	public void setTag(String newTag);
+	void setTag(String newTag);
 
 	/**
 	* Sets the value of a named field.
@@ -129,14 +129,14 @@ public interface ITuple {
 	* @param Object any Object. If this tuple is a template(anti-tuple)
 	*		  		the value may be null
 	*/
-	public void set(String name, Object f);
+	void set(String name, Object f);
 
 	/**
 	* Get the value of the field with the given name.
 	* @param index an index into the ordered list
 	* @return an Object
 	*/
-	public Object get(String name);
+	Object get(String name);
 
 	/**
 	* Return a hash value for this ITuple such that all Tuples with the
@@ -151,23 +151,23 @@ public interface ITuple {
         * the ITuple is assigned, which defaults to "*"
         * hash is always a String
 	**/
-	public Object hash();
+	Object hash();
 
 	/**
 	* Get the number of fields in this ITuple.
 	* @return int
 	*/
-	public int numFields();
+	int numFields();
 
 	/**
 	* Return a set of all the field names in this ITuple
 	*/
-	public Set fieldNames();
+	Set<String> fieldNames();
 
 	/**
 	 * Clear all fields -- for recycling
 	 */
-	public void clearFields();
+	void clearFields();
 
 	/**
 	* Determine whether this tuple is a match for the given anti-tuple
@@ -175,60 +175,60 @@ public interface ITuple {
 	* @param antiTup a ITuple to be used as a template
 	* @return true if the ITuple is a match for the template, false otherwise.
 	*/
-	public boolean matches(final ITuple antiTup);
+	boolean matches(final ITuple antiTup);
 
-        /**
-         * Identity for each ITuple
-         */
-        public void setID(String id);
-        public String getID();
+    /**
+     * Identity for each ITuple
+     */
+    void setID(String id);
+    String getID();
 
-        /**
-         * Allow for partial matching
-         * If true, only the fields in the AntiTuple need match
-         * no matter how many other fields are present
-         */
-        public void setAllowPartialMatch(boolean tf);
-        public boolean getAllowPartialMatch();
+    /**
+     * Allow for partial matching
+     * If true, only the fields in the AntiTuple need match
+     * no matter how many other fields are present
+     */
+    void setAllowPartialMatch(boolean tf);
+    boolean getAllowPartialMatch();
 	/**
 	 * Set priority value
 	 * @param int priority
 	 */
-	public void setPriority(int priorityValue);
+	void setPriority(int priorityValue);
 	/**
 	 * Get priority value
 	 * @return int priority value
 	 */
-	public int getPriority();
+	int getPriority();
 	/**
 	 * Set IConstraint for matching
 	 */
-	public void setConstraint(IConstraint newConstraint);
+	void setConstraint(IConstraint newConstraint);
 	/**
 	 * Get IConstraint for matching
 	 * @return IConstraint -- a class containing FOL for matching
 	 */
-	public IConstraint getConstraint();
-        /**
-         * @return tuple encoded as a string:
-         *  <tuple>
-         *    <field>
-         *      <name>...</name>
-         *      <value>...</value>
-         *    </field>
-         *    <priority>...</priority>
-         *   </tuple>
-         */
-        public String toString();
-        /**
-         * Speedup:
-         * @param ITuple that matches
-         */
-        public void setMatch(ITuple match);
-        /**
-         *
-         * Speedup:
-         * @return matching ITuple
-         */
-        public ITuple getMatch();
+	IConstraint getConstraint();
+    /**
+     * @return tuple encoded as a string:
+     *  <tuple>
+     *    <field>
+     *      <name>...</name>
+     *      <value>...</value>
+     *    </field>
+     *    <priority>...</priority>
+     *   </tuple>
+     */
+    String toString();
+    /**
+     * Speedup:
+     * @param ITuple that matches
+     */
+    void setMatch(ITuple match);
+    /**
+     *
+     * Speedup:
+     * @return matching ITuple
+     */
+    ITuple getMatch();
 }

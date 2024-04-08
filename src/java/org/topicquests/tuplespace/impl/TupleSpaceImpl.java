@@ -116,10 +116,10 @@ public final class TupleSpaceImpl implements ITupleSpace {
 	**/
 	private Map templateMap = new HashMap();
 
-        /**
-         * Shutdown for all threads
-         */
-        boolean isRunning = true;
+    /**
+     * Shutdown for all threads
+     */
+    boolean isRunning = true;
 
 	/**
 	* Constructor. Normally never called directly.
@@ -129,28 +129,28 @@ public final class TupleSpaceImpl implements ITupleSpace {
 		this.spaceName = name;
 	}
 
-        /**
-         * @return list of Tuple IDs
-         */
-        public Iterator tuples() {
-          if (tupleMap==null) return null;
-          Set keys = tupleMap.keySet();
-          return keys.iterator();
-        }
+    /**
+     * @return list of Tuple IDs
+     */
+    public Iterator tuples() {
+      if (tupleMap==null) return null;
+      Set keys = tupleMap.keySet();
+      return keys.iterator();
+    }
 
-        /**
-         * @param Tuple to insert into this TupleSpace
-         * Tuple's tag (group) could be a "*" which would then
-         * become a valid group "*" -- a don't care
-         * Note: "*" is the default tag (group) for a Tuple
-         *
-         * Tuples now have a Timestamp
-         * They should be sorted latest last
-         * Actually, they are added to the end of the list so they are
-         * already sorted!
-         * Read/Take should take from the front of the List
-         *
-         */
+    /**
+     * @param Tuple to insert into this TupleSpace
+     * Tuple's tag (group) could be a "*" which would then
+     * become a valid group "*" -- a don't care
+     * Note: "*" is the default tag (group) for a Tuple
+     *
+     * Tuples now have a Timestamp
+     * They should be sorted latest last
+     * Actually, they are added to the end of the list so they are
+     * already sorted!
+     * Read/Take should take from the front of the List
+     *
+     */
 	public void insert(final ITuple tup) {
 System.out.println("INSERTING "+tup.toString());
 		// make a defensive copy of the template tuple
@@ -242,14 +242,6 @@ System.out.println("INSERT starting to check for match");
 		}
 		return match;
 	}
-	/**
-	 * Read a ITuple matching the template.
-	 * This method "subscribes" a TupleSpaceListener
-	 * /
-	public void read(final ITuple antiTup, long listener) {
-  System.out.println("READING "+antiTup);
-          new ReadWaiter(antiTup,listener);
-	}*/
 
 	public ITuple read(final ITuple antiTup, long blockFor) {
 
@@ -278,27 +270,20 @@ System.out.println("INSERT starting to check for match");
 		return match;
 	}
 
-        /**
-         * @param template ITuple
-         * @return List of matching Tuples or empty list
-         */
-        public List collect(ITuple antiTup) {
-		// make a defensive copy of the template ITuple
-		ITuple template = antiTup.copy();
-                return getMatches(template);
-        }
+    /**
+     * @param template ITuple
+     * @return List of matching Tuples or empty list
+     */
+    public List<ITuple> collect(ITuple antiTup) {
+	// make a defensive copy of the template ITuple
+	ITuple template = antiTup.copy();
+            return getMatches(template);
+    }
 
-	public ITuple noWaitExtract(final ITuple antiTup) {
-
-		// make a defensive copy of the template ITuple
-		ITuple template = antiTup.copy();
-
-		return getMatch(template, true);
-	}
-        /**
-         * @param antiTuple to match
-         * @return ITuple or null
-         */
+    /**
+     * @param antiTuple to match
+     * @return ITuple or null
+     */
 	public ITuple noWaitRead(final ITuple antiTup) {
 
 		// make a defensive copy of the template ITuple
@@ -306,130 +291,8 @@ System.out.println("INSERT starting to check for match");
 System.out.println("READING "+antiTup.toString());
 		return getMatch(template, false);
 	}
-        /**
-         * Internal class to wait (subscribe) then Take a Tuple
-         */
-        class TakeWaiter extends Thread {
 
-        }
-        /**
-         * Internal class to wait (subscribe) then Read a Tuple
-         * /
-        class ReadWaiter extends Thread {
-          private ITuple antiTuple = null;
-          //private ITupleSpaceListener listener = null;
-          private ITuple match = null;
 
-          public ReadWaiter(ITuple antiTup, long l) {
-            antiTuple = antiTup.copy();
-            start();
-          }
-          public void run() {
-            boolean firstTry = true;
-            while ((match = getMatch(antiTuple, false)) == null) {
-              // tried looking for a match
-              // not found
-              // jump inside innerloop and just wait until insert()
-              // lands us a match
-              // NOTE: need lease or time duration because this runs forever
-              while (isRunning) {  // start innerloop
-                yield();
-                    if (firstTry) {
-                      // store it into templateMap
-                      // when a Tuple is inserted, TS checks templateMap
-                      // for matches
-                      // if match found, notify() fired on antiTuple
-      System.out.println("TS Storing antiTuple");
-                          store(antiTuple, templateMap);
-                            firstTry = false;
-                    }
-                    yield();
-                    try {
-                      // wait until a match is found
-//      System.out.println("TS Waiting antiTuple");
-                      antiTuple.wait(l); 	// wait as long as required...
-      System.out.println("TS found antiTuple");
-                      match = antiTuple.getMatch();
-                      break; // match found
-                    } catch (Exception e) { }
-            } // end innerloop
-              if (antiTuple.getMatch() != null)
-                break;
-              // otherwise, we got a readNotifier
-              // see if we got a match
-            }
-            listener.handleTuple(match);
-          }
-        }
-	/************************* Prioritized Space methods
-	/**
-	* Insert the given Tuple into the space.
-	* Inserted Tuple is sorted on priority
-	* @param tup the Tuple to insert.
-	* /
-	public void insertPrioritized(final ITuple tup) {
-		//FIXME:
-	}
-
-	/**
-	* Extract a Tuple matching the template. This method blocks
-	* until there is a match available, or until the blocking time
-	* is exceeded.
-	* @param antiTup the template to match against
-	* @param blockFor the time to block in milliseconds.
-	* @return a matching Tuple, or null if none exists.
-	*         The matching Tuple is removed from the space.
-	*	  Matching Tuple matches also the priority value
-	* /
-	public ITuple extractPrioritized(final ITuple antiTup, long blockFor) {
-		ITuple result = null;
-		//FIXME:
-		return result;
-	}
-
-	/**
-	* Read a Tuple matching the template. This method blocks
-	* until there is a match available, or until the blocking time
-	* is exceeded.
-	* @param antiTup the template to match against
-	* @param blockFor the time to block in milliseconds.
-	* @return a matching Tuple, or null if none exists.
-	*         The matching Tuple is not removed from the space.
-	*	  Matching Tuple has the highest priority for the match
-	* /
-	public ITuple readPrioritized(final ITuple antiTup, long blockFor) {
-		ITuple result = null;
-		//FIXME:
-		return result;
-	}
-
-	/**
-	* Non-blocking version of read(). Returns immediately.
-	* Read from prioritized space
-	* @param antiTup the template to match against
-	* @return a matching Tuple, or null if none exists.
-	*         The matching Tuple is not removed from the space.
-	*	  Matching Tuple has the highest priority for the match
-	*/
-	public ITuple noWaitReadPrioritized(final ITuple antiTup) {
-		ITuple result = null;
-		//FIXME:
-		return result;
-	}
-
-	/**
-	* Non-blocking version of extract(). Returns immediately.
-	* Extract from prioritized space
-	* @param antiTup the template to match against
-	* @return a matching Tuple, or null if none exists.
-	*         The matching Tuple is removed from the space.
-	*	  Matching Tuple matches also the priority value
-	* /
-	public ITuple noWaitExtractPrioritized(final ITuple antiTup) {
-		ITuple result = null;
-		//FIXME:
-		return result;
-	}
 
 	/************************* Private methods *************************/
 

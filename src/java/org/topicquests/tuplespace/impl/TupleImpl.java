@@ -127,75 +127,75 @@ public final class TupleImpl implements ITuple, IConstants {
 
 	private int fieldCount = 0;
 
-        protected boolean allowPartialMatch = false;
+    protected boolean allowPartialMatch = false;
 
-        public Timestamp created = null;
+    public Timestamp created = null;
 
-        /**
-         * Speedup: let TupleSpace.insert() tell this Tuple (acting as a template)
-         * which Tuple matched it
-         */
-        private ITuple matchTuple = null;
-        /**
-         * Features added to let Tuple know it's command -- put, take, read
-         */
-        private String command = null;
-        public String getCommand() {
-          return command;
-        }
-        public void setCommand(String cmd) {
-          command = cmd;
-        }
-        /**
-         * Features added to let Tuple know it's TupleSpace name
-         */
-        private String mySpace = null;
+    /**
+     * Speedup: let TupleSpace.insert() tell this Tuple (acting as a template)
+     * which Tuple matched it
+     */
+    private ITuple matchTuple = null;
+    /**
+     * Features added to let Tuple know it's command -- put, take, read
+     */
+    private String command = null;
+    public String getCommand() {
+      return command;
+    }
+    public void setCommand(String cmd) {
+      command = cmd;
+    }
+    /**
+     * Features added to let Tuple know it's TupleSpace name
+     */
+    private String mySpace = null;
 
-        public String getSpace() {
-          return mySpace;
-        }
-        public void setSpace(String space) {
-          mySpace = space;
-        }
-        /**
-         * Identity for each Tuple
-         */
-        public void setID(String id) {
-          this.id = id;
-        }
-        public String getID() {
-          return this.id;
-        }
-        /**
-         * Timestamp support
-         */
-        public Timestamp getCreated() {
-          return this.created;
-        }
-        public void setCreated(Timestamp ts) {
-          this.created = ts;
-        }
-        /**
-         * Transaction support <requestId>
-         */
-        public String getRequestId() {
-          return this.requestId;
-        }
-        public void setRequestId(String id) {
-          this.requestId = id;
-        }
+    public String getSpace() {
+      return mySpace;
+    }
+    public void setSpace(String space) {
+      mySpace = space;
+    }
+    /**
+     * Identity for each Tuple
+     */
+    public void setID(String id) {
+      this.id = id;
+    }
+    public String getID() {
+      return this.id;
+    }
+    /**
+     * Timestamp support
+     */
+    public Timestamp getCreated() {
+      return this.created;
+    }
+    public void setCreated(Timestamp ts) {
+      this.created = ts;
+    }
+    /**
+     * Transaction support <requestId>
+     */
+    public String getRequestId() {
+      return this.requestId;
+    }
+    public void setRequestId(String id) {
+      this.requestId = id;
+    }
 
-        /**
-         * Allow for partial matching
-         * If true, only the fields in the AntiTuple need match
-         * no matter how many other fields are present
-         */
-        public void setAllowPartialMatch(boolean tf) {
-          allowPartialMatch = tf;
-        }
-        public boolean getAllowPartialMatch() {
-          return allowPartialMatch;
-        }
+    /**
+     * Allow for partial matching
+     * If true, only the fields in the AntiTuple need match
+     * no matter how many other fields are present
+     */
+    public void setAllowPartialMatch(boolean tf) {
+      allowPartialMatch = tf;
+    }
+    public boolean getAllowPartialMatch() {
+      return allowPartialMatch;
+    }
 
 	/**
 	* This constructor is normally not called by applications.
@@ -254,7 +254,7 @@ public final class TupleImpl implements ITuple, IConstants {
 		return this.fieldCount;
 	}
 
-	public Set fieldNames() {
+	public Set<String> fieldNames() {
 		return this.tupleFields.keySet();
 	}
 
@@ -290,13 +290,13 @@ System.out.println("Tuple Match 4");
 		// all non-null fields in the antituple have the same values
 		// in the tuple
 
-		Iterator antiNames = aKeys.iterator();
-		Iterator tupNames = tKeys.iterator();
+		Iterator<String> antiNames = aKeys.iterator();
+//		Iterator<String> tupNames = tKeys.iterator();
 		String fieldName;
 		Object aValue;
 		Object tValue;
 		while (antiNames.hasNext()) {
-			fieldName = (String)antiNames.next();
+			fieldName = antiNames.next();
 			aValue = antiTup.get(fieldName);
       System.out.println("Tuple looking for "+allowPartialMatch+" // "+fieldName+" // "+aValue);
                   /**
@@ -354,57 +354,57 @@ System.out.println("Tuple Match 4");
 	public IConstraint getConstraint() {
 		return this.matchConstraint;
 	}
+    /**
+     * @return tuple encoded as a string:
+     *  <tuple>
+     *    <field>
+     *      <name>...</name>
+     *      <value>...</value>
+     *    </field>
+     *    <priority>...</priority>
+     *   </tuple>
+     */
+    public String toString() {
+      StringBuffer buf = new StringBuffer("<"+TUPLE+">\n");
+      if (id != null)
+        buf.append("  <"+ID+">"+id+"</"+ID+">\n");
+      if (mySpace != null)
+        buf.append("  <"+SPACE+">"+mySpace+"</"+SPACE+">\n");
+      buf.append("  <"+GROUP+">"+tag+"</"+GROUP+">\n");
+      if (command != null)
+        buf.append("  <"+DO+">"+command+"</"+DO+">\n");
+      buf.append("  <"+REQUEST_ID+">"+requestId+"</"+REQUEST_ID+">\n");
+      if (allowPartialMatch)
+        buf.append("  <"+PARTIAL_MATCH+"/>\n");
+      Set keys = tupleFields.keySet();
+      Iterator itr = keys.iterator();
+      String n = null;
+      while (itr.hasNext()) {
+        n = (String)itr.next();
+        buf.append("  <"+FIELD+">\n");
+        buf.append("    <"+NAME+">"+n+"</"+NAME+">\n");
+        buf.append("    <"+VALUE+">"+(String)tupleFields.get(n)+"</"+VALUE+">\n");
+        buf.append("  </"+FIELD+">\n");
+      }
+      if (priority > -1)
+        buf.append("  <"+PRIORITY+">"+Integer.toString(priority)+"</"+PRIORITY+">\n");
+      buf.append("</"+TUPLE+">\n");
+      return buf.toString();
+    }
         /**
-         * @return tuple encoded as a string:
-         *  <tuple>
-         *    <field>
-         *      <name>...</name>
-         *      <value>...</value>
-         *    </field>
-         *    <priority>...</priority>
-         *   </tuple>
-         */
-        public String toString() {
-          StringBuffer buf = new StringBuffer("<"+TUPLE+">\n");
-          if (id != null)
-            buf.append("  <"+ID+">"+id+"</"+ID+">\n");
-          if (mySpace != null)
-            buf.append("  <"+SPACE+">"+mySpace+"</"+SPACE+">\n");
-          buf.append("  <"+GROUP+">"+tag+"</"+GROUP+">\n");
-          if (command != null)
-            buf.append("  <"+DO+">"+command+"</"+DO+">\n");
-          buf.append("  <"+REQUEST_ID+">"+requestId+"</"+REQUEST_ID+">\n");
-          if (allowPartialMatch)
-            buf.append("  <"+PARTIAL_MATCH+"/>\n");
-          Set keys = tupleFields.keySet();
-          Iterator itr = keys.iterator();
-          String n = null;
-          while (itr.hasNext()) {
-            n = (String)itr.next();
-            buf.append("  <"+FIELD+">\n");
-            buf.append("    <"+NAME+">"+n+"</"+NAME+">\n");
-            buf.append("    <"+VALUE+">"+(String)tupleFields.get(n)+"</"+VALUE+">\n");
-            buf.append("  </"+FIELD+">\n");
-          }
-          if (priority > -1)
-            buf.append("  <"+PRIORITY+">"+Integer.toString(priority)+"</"+PRIORITY+">\n");
-          buf.append("</"+TUPLE+">\n");
-          return buf.toString();
-        }
-            /**
-         * Speedup:
-         * @param ITuple that matches
-         */
-        public void setMatch(ITuple match) {
-          this.matchTuple = match;
-        }
-        /**
-         *
-         * Speedup:
-         * @return matching Tuple
-         */
-        public ITuple getMatch() {
-          return this.matchTuple;
-        }
+     * Speedup:
+     * @param ITuple that matches
+     */
+    public void setMatch(ITuple match) {
+      this.matchTuple = match;
+    }
+    /**
+     *
+     * Speedup:
+     * @return matching Tuple
+     */
+    public ITuple getMatch() {
+      return this.matchTuple;
+    }
 
 }

@@ -32,50 +32,50 @@ public interface ILogicElement {
 	/**
 	 * Type Setters
 	 */
-	public void isOrType();
-	public void isAndType();
-	public void isNotType();
-	public void isEqualsType();
-	public void isLiteralType();
-	public void isFetchType();
+	void isOrType();
+	void isAndType();
+	void isNotType();
+	void isEqualsType();
+	void isLiteralType();
+	void isFetchType();
 	/**
 	 * The interpreter
 	 */
-	public boolean eval(ITuple inTuple);
+	boolean eval(ITuple inTuple);
 	
 	/**
 	 * Add element to operand list
 	 * @param Object is ILogicElement
 	 */
-	public void addElement(Object operand);
+	void addElement(Object operand);
 	
 	/**
 	 * Clear elements -- for recycling
 	 */
-	public void clearElements();
+	void clearElements();
 	/**
 	 * Set a literal value
 	 */
-	public void setLiteral(Object inObject);
+	void setLiteral(Object inObject);
 	/**
 	 * Fetch a literal value
 	 * @return java.lang.Object, a literal value
 	 */
-	public Object getLiteral();
+	Object getLiteral();
 	
 	/**
 	 * Return true if this element is a literal object
 	 * @return boolean
 	 */
-	public boolean isLiteral();
+	boolean isLiteral();
 	/**
 	 * Set a field name for later fetching from ITuple
 	 * @param String literal name--a field name in a ITuple
 	 */
-	public void setFieldName(String fieldName);
+	void setFieldName(String fieldName);
 	/**
 	 * Get a field name to fetch from a ITuple
 	 * @return String field name from a ITuple
 	 */
-	public String getFieldName();
+	String getFieldName();
 }
