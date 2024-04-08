@@ -17,7 +17,8 @@ public interface IDynamicAgenda {
 	 */
 	void createChannel(String name);
 	
-	ITupleSpace getChannl(String name);
+	ITupleSpace getChannel(String name);
+	
 	
 	//////////////////////
 	// Tuples

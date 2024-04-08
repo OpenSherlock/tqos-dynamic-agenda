@@ -2,21 +2,20 @@
 
 
 <!-- ======================================================================= -->
-<!-- SemiSpaceBean             											 -->
-<!-- @copyright 2012, 2013 TopicQuests											 -->
-<!-- @license Apache2                                  					     -->
+<!-- DynamicAgenda             											 -->
+<!-- @copyright 2012, 2013, 2024 TopicQuests											 -->
+<!-- @license agpl3                                  					     -->
 <!-- ======================================================================= -->
 
-<project name="SemiSpaceBean" default="compile" basedir=".">
+<project name="dynamicagenda" default="compile" basedir=".">
 
 	<!--  properties -->
 	<property file="build.properties" />
 
 	<property name="basedir" value="." />
 	
-	<property name="src.dir" value="${basedir}/src/" />
+	<property name="src.dir" value="${basedir}/src/java/" />
 
-	<property name="lib.dir" value="${basedir}/lib" />
 	<property name="classes.dir" value="${basedir}/classes" />
 
 	<property name="compile.debug" value="on" />
@@ -27,9 +26,6 @@
 	<!-- Classpath etc.                                                      -->
 	<!-- =================================================================== -->
 	<path id="build.classpath">
-		<fileset dir="${lib.dir}">
-			<include name="**/*.jar" />
-		</fileset>
 		<fileset dir="${classes.dir}">
 			<include name="/**/*.class" />
 		</fileset>
@@ -45,7 +41,7 @@
 			deprecation="${compile.deprecation}" optimize="${optimize}" target="1.6">
 			<classpath refid="build.classpath" />
 		</javac>
-		<jar file="semispace-bean-${buildversion}.jar" basedir="${classes.dir}" />
+		<jar file="dynamicagenda-${buildversion}.jar" basedir="${classes.dir}" />
 	</target>
 </project>
 

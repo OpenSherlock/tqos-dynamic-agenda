@@ -26,7 +26,7 @@ public class DynamicAgenda implements IDynamicAgenda{
 	}
 
 	@Override
-	public ITupleSpace getChannl(String name) {
+	public ITupleSpace getChannel(String name) {
 		return channels.get(name);
 	}
 
