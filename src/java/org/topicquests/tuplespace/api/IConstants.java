@@ -17,7 +17,6 @@ package org.topicquests.tuplespace.api;
 
 public interface IConstants {
 	
-	public static final String PRIORITY_FIELD = "priority";
   /////////////
   // COMMANDS
   /////////////

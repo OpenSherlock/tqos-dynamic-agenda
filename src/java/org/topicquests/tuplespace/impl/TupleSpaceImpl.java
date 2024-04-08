@@ -103,7 +103,7 @@ public final class TupleSpaceImpl implements ITupleSpace {
 	/**
 	* A Map for holding Lists of Tuples.
 	*/
-	private Map tupleMap = new HashMap();
+	//private Map tupleMap = new HashMap();
 	
 	private SortedSet<ITuple> myTuples;
 
@@ -130,9 +130,8 @@ public final class TupleSpaceImpl implements ITupleSpace {
      * @return list of Tuple IDs
      */
     public Iterator tuples() {
-      if (tupleMap==null) return null;
-      Set keys = tupleMap.keySet();
-      return keys.iterator();
+      if (myTuples==null) return null;
+      return myTuples.iterator();
     }
 
     /**
@@ -154,93 +153,40 @@ System.out.println("INSERTING "+tup.toString());
 		ITuple insertTup = tup.copy();
 
 
-		store(insertTup, tupleMap);
 System.out.println("INSERT starting to check for match");
 
-		// search the template map. If a match is found, notify() the
-		// waiting thread(s).
-		Object thash = insertTup.hash();
-		synchronized(this.templateMap) {
-                    // the meaning of thash in search is the same as "any" or
-                    // all possible template groups
-			if (templateMap.containsKey(thash)) {
-				List templateList = (List)templateMap.get(thash);
-				ListIterator templates = templateList.listIterator();
-				ITuple curTemplate;
-				while (templates.hasNext()) {
-					curTemplate = (ITuple)templates.next();
-      System.out.println("Insert matching "+curTemplate.toString());
-					if (insertTup.matches(curTemplate)) {
-      System.out.println("Insert found match");
-						synchronized (curTemplate) {
-                          // tell curTemplate (antiTuple)
-                          // it found a match
-                            insertTup.setRequestId(curTemplate.getRequestId());
-                            curTemplate.setMatch(insertTup);
-                            curTemplate.notify();
-						}
-					}
-				}
-			} else if (thash.equals("*")) {
-                          // must check all possible templates
-       System.out.println("Insert matching against all templates");
-                        }
-
+		synchronized(this.myTuples) {
+			myTuples.add(tup);
+			myTuples.notify();
 		}
-
 	}
 
-	public ITuple extract(final ITuple antiTup, long blockFor) {
 
-		// make a defensive copy of the template ITuple
-		ITuple template = antiTup.copy();
-
-		ITuple match = null;
-		boolean firstTry = true;
-		synchronized (template) {
-			while ((match = getMatch(template, true)) == null) {
-				if (firstTry) {
-					store(template, templateMap);
-					firstTry = false;
-				}
-				try {
-					if (blockFor == Long.MAX_VALUE) {
-						template.wait(); 	// wait as long as required...
-					}
-					else {
-						template.wait(blockFor);
-						return getMatch(template, true); // we only get one try
-					}
-				} catch (Exception e) { }
-			}
-		}
-		return match;
-	}
 	/**
 	 * Extract a Tuple matching the template.
 	 * This method "subscribes" a TupleSpaceListener
 	 */
-	public ITuple take(final ITuple antiTup, long listener) {
+	public ITuple take(final ITuple antiTup, long t) {
 		// make a defensive copy of the template tuple
 		ITuple template = antiTup.copy();
 
 		ITuple match = null;
 		boolean firstTry = true;
-		synchronized (template) {
+		synchronized (myTuples) {
 			while ((match = getMatch(template, true)) == null) {
 				if (firstTry) {
-					store(template, templateMap);
 					firstTry = false;
-				}
-				try {
-						template.wait(); 	// wait as long as required...
-				} catch (Exception e) { }
+					try {
+						template.wait(t); 	// wait as long as required...
+					} catch (Exception e) { }
+				} else
+					return match;
 			}
 		}
 		return match;
 	}
 
-	public ITuple read(final ITuple antiTup, long blockFor) {
+	public ITuple read(final ITuple antiTup, long t) {
 
 		// make a defensive copy of the template ITuple
 		ITuple template = antiTup.copy();
@@ -250,17 +196,12 @@ System.out.println("INSERT starting to check for match");
 		synchronized (template) {
 			while ((match = getMatch(template, false)) == null) {
 				if (firstTry) {
-					store(template, templateMap);
+					//store(template, templateMap);
 					firstTry = false;
 				}
 				try {
-					if (blockFor == Long.MAX_VALUE) {
-						template.wait(); 	// wait as long as required...
-					}
-					else {
-						template.wait(blockFor);
+						template.wait(t);
 						return getMatch(template, false); // we only get one try
-					}
 				} catch (Exception e) { }
 			}
 		}
@@ -293,32 +234,10 @@ System.out.println("READING "+antiTup.toString());
 
 	/************************* Private methods *************************/
 
-	private void store(ITuple tup, Map store) {
-
-		/*
-		Use the tuple type hash to access the List
-		to contain this tuple. If the appropriate List
-		doesn't exist, create it.
-		*/
-		Object thash = tup.hash();
-		List tupleList;
-		synchronized (store) {
-			if (store.containsKey(thash)) {
-				tupleList = (List)store.get(thash);
-				tupleList.add(tup);
-			}
-			else {
-				tupleList = new ArrayList();
-				tupleList.add(tup);
-				store.put(thash, tupleList);
-			}
-		}
-	}
 
 	private ITuple getMatch(ITuple template, boolean destroy) {
 
-		Object thash = template.hash();
-		synchronized(this.tupleMap) {
+		synchronized(myTuples) {
 			if (tupleMap.containsKey(thash)) {
 				List tupleList = (List)tupleMap.get(thash);
       System.out.println("MATCHING WITH "+tupleList.size());
@@ -347,7 +266,7 @@ System.out.println("READING "+antiTup.toString());
 	private List getMatches(ITuple template) {
           List result = new ArrayList();
 		Object thash = template.hash();
-		synchronized(this.tupleMap) {
+		synchronized(myTuples) {
 			if (tupleMap.containsKey(thash)) {
 				List tupleList = (List)tupleMap.get(thash);
       System.out.println("MATCHING WITH "+tupleList.size());
