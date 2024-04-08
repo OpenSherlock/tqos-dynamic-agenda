@@ -1,28 +1,16 @@
-/*
- * Copyright 2012, TopicQuests
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions
- * and limitations under the License.
- */
-package org.semispace.api;
+package org.topicquests.tuplespace.api;
 
 /**
+ * <p>Title: TupleSpace4J</p>
+ * <p>Description: Tuplespace implementation</p>
+ * <p>Copyright: Copyright (c) 2003 Jack Park</p>
+ * <p>Company: Nex</p>
  * @author Jack Park
+ * @version 1.0
+ * @license Jabber Open Source License (JOSL)
  */
+
 public interface IConstants {
-	//////////////////
-	// Results
-	//////////////////
-	public static final String NO_DATA = "{\"cargo\":\"nodata\"}";
   /////////////
   // COMMANDS
   /////////////
@@ -50,24 +38,24 @@ public interface IConstants {
   public static final String READ_WAIT = "rwait";
   /**
    * Read and return later to a "po box"
-   * Requires a response that is either an empty ISemiSpaceTuple
+   * Requires a response that is either an empty Tuple
    * or the result
    * po_box is a TupleGroup associated with the <userId> tag
    * should also be associated with a <requestId> to properly
-   * associate returned ISemiSpaceTuple with request
-   * A READ_POST with an empty ISemiSpaceTuple means just send back
+   * associate returned Tuple with request
+   * A READ_POST with an empty Tuple means just send back
    * what's in my mailbox. Response would be to send
    * a <message> with all <tuple>s found
    */
   public static final String READ_POST = "rpost";
   /**
    * Take and return later to a "po box"
-   * Requires a response that is either an empty ISemiSpaceTuple
+   * Requires a response that is either an empty Tuple
    * or the result
    * po_box is a TupleGroup associated with the <userId> tag
    * should also be associated with a <requestId> to properly
-   * associate returned ISemiSpaceTuple with request
-   * A TAKE_POST with an empty ISemiSpaceTuple means just send back
+   * associate returned Tuple with request
+   * A TAKE_POST with an empty Tuple means just send back
    * what's in my mailbox. Response would be to send
    * a <message> with all <tuple>s found
    */
