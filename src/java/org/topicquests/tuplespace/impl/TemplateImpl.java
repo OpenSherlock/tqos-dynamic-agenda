@@ -23,6 +23,10 @@ public class TemplateImpl extends TupleImpl implements ITemplate {
 		super("template");
 	}
 
+	public TemplateImpl(Map<String,Object> properties) {
+		super("template", properties);
+	}
+
 
 	@Override
 	public ILogicElement getConstraint() {
