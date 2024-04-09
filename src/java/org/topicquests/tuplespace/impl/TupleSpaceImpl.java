@@ -100,17 +100,8 @@ public final class TupleSpaceImpl implements ITupleSpace {
 	*/
 	private String spaceName;
 
-	/**
-	* A Map for holding Lists of Tuples.
-	*/
-	//private Map tupleMap = new HashMap();
 	
 	private SortedSet<ITuple> myTuples;
-
-	/**
-	* A Map for holding Lists of Templates waiting to be matched.
-	**/
-	private Map templateMap = new HashMap();
 
     /**
      * Shutdown for all threads
@@ -238,53 +229,42 @@ System.out.println("READING "+antiTup.toString());
 	private ITuple getMatch(ITuple template, boolean destroy) {
 
 		synchronized(myTuples) {
-			if (tupleMap.containsKey(thash)) {
-				List tupleList = (List)tupleMap.get(thash);
-      System.out.println("MATCHING WITH "+tupleList.size());
-				ListIterator tuples = tupleList.listIterator();
-				ITuple curTuple = null;
-				while (tuples.hasNext()) {
-					curTuple = (ITuple)tuples.next();
-        System.out.println("MATCHING "+curTuple.toString());
-        System.out.println("MATCHING To "+template.toString());
-					if (curTuple.matches(template)) {
-        System.out.println("MATCHING GOT MATCH");
-						if (destroy)
-							tuples.remove(); // extract the tuple if appropriate
-						curTuple.setRequestId(template.getRequestId());
-                        return curTuple.copy();
-					}
+			Iterator tuples = myTuples.iterator();
+			ITuple curTuple = null;
+			while (tuples.hasNext()) {
+				curTuple = (ITuple)tuples.next();
+    System.out.println("MATCHING "+curTuple.toString());
+    System.out.println("MATCHING To "+template.toString());
+				if (curTuple.matches(template)) {
+    System.out.println("MATCHING GOT MATCH");
+					if (destroy)
+						tuples.remove(); // extract the tuple if appropriate
+					curTuple.setRequestId(template.getRequestId());
+                    return curTuple.copy();
 				}
-				// no match found
-        System.out.println("MATCHING NO MATCH");
-				return null;
 			}
-			// no such tuple exists
+			// no match found
+    System.out.println("MATCHING NO MATCH");
 			return null;
 		}
 	}
-	private List getMatches(ITuple template) {
-          List result = new ArrayList();
-		Object thash = template.hash();
+	private List<ITuple> getMatches(ITuple template) {
+          List<ITuple> result = new ArrayList<ITuple>();
 		synchronized(myTuples) {
-			if (tupleMap.containsKey(thash)) {
-				List tupleList = (List)tupleMap.get(thash);
-      System.out.println("MATCHING WITH "+tupleList.size());
-				ListIterator tuples = tupleList.listIterator();
-				ITuple curTuple = null;
-				while (tuples.hasNext()) {
-					curTuple = (ITuple)tuples.next();
-        System.out.println("MATCHING "+curTuple.toString());
-        System.out.println("MATCHING To "+template.toString());
-					if (curTuple.matches(template)) {
-        System.out.println("MATCHING GOT MATCH");
-						curTuple.setRequestId(template.getRequestId());
-                                                result.add(curTuple.copy());
-					}
+			Iterator<ITuple> tuples = myTuples.iterator();
+			ITuple curTuple = null;
+			while (tuples.hasNext()) {
+				curTuple = tuples.next();
+    System.out.println("MATCHING "+curTuple.toString());
+    System.out.println("MATCHING To "+template.toString());
+				if (curTuple.matches(template)) {
+    System.out.println("MATCHING GOT MATCH");
+					curTuple.setRequestId(template.getRequestId());
+                    result.add(curTuple.copy());
 				}
-			}
+			}	
 		}
-          return result;
+        return result;
 	}
 
 }

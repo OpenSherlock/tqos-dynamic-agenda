@@ -21,7 +21,7 @@ public class LogicElementImpl implements ILogicElement {
 	/**
 	 * elements to be interpreted.
 	 */
-	private ArrayList elements = new ArrayList();
+	private ArrayList<Object> elements = new ArrayList<Object>();
 	/**
 	 * literal object
 	 */
