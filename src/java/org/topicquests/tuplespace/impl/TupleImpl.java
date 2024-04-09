@@ -336,12 +336,7 @@ System.out.println("Tuple Match 4");
 	public int getPriority() {
 		return this.priority;
 	}
-	/**
-	 * Recycle support
-	 */
-	public void clearFields() {
-		//FIXME
-	}
+
 	public void setTag(String newTag) {
 		this.tag = newTag;
 	}

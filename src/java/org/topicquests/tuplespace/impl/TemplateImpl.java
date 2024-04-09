@@ -31,10 +31,22 @@ public class TemplateImpl extends TupleImpl implements ITemplate {
 
 	@Override
 	public void compile() {
+		ILogicElement root = new LogicElementImpl();
+		root.isAndType();
 		Map<String,Object> data = this.getFields();
 		String key;
+		Object val;
+		ILogicElement x;
 		Iterator<String> itr = data.keySet().iterator();
-		
+		while (itr.hasNext()) {
+			key = itr.next();
+			val = data.get(key);
+			x = new LogicElementImpl();
+			x.isEqualsType();
+			x.setFieldName(key);
+			x.setLiteral(val);
+			root.addElement(x);
+		}
 
 
 	}

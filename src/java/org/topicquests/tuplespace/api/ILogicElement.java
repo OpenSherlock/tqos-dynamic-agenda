@@ -55,10 +55,6 @@ public interface ILogicElement {
 	void addElement(Object operand);
 	
 	/**
-	 * Clear elements -- for recycling
-	 */
-	void clearElements();
-	/**
 	 * Set a literal value
 	 */
 	void setLiteral(Object inObject);

@@ -48,27 +48,27 @@ public class DynamicAgenda implements IDynamicAgenda{
 	}
 
 	@Override
-	public void put(String channelNamee, ITuple tuple) {
-		// TODO Auto-generated method stub
-		
+	public void put(String channelName, ITuple tuple) {
+		ITupleSpace c = getChannel(channelName);
+		c.insert(tuple);
 	}
 
 	@Override
-	public ITuple read(ITuple template, long waitTime) {
-		// TODO Auto-generated method stub
-		return null;
+	public ITuple read(String channelName, ITemplate template, long waitTime) {
+		ITupleSpace c = getChannel(channelName);
+		return c.read(template, waitTime);
 	}
 
 	@Override
-	public ITuple take(ITuple template, long waitTime) {
-		// TODO Auto-generated method stub
-		return null;
+	public ITuple take(String channelName, ITemplate template, long waitTime) {
+		ITupleSpace c = getChannel(channelName);
+		return c.take(template, waitTime);
 	}
 
 	@Override
 	public Iterator<ITuple> listTuples(String channelName) {
-		// TODO Auto-generated method stub
-		return null;
+		ITupleSpace c = getChannel(channelName);
+		return c.tuples();
 	}
 
 	@Override

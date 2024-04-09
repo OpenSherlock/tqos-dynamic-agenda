@@ -54,19 +54,21 @@ public interface IDynamicAgenda {
 	
 	/**
 	 * 
+	 * @param channelName TODO
 	 * @param template
 	 * @param waitTime
 	 * @return can return {@code null}
 	 */
-	ITuple read(ITuple template, long waitTime);
+	ITuple read(String channelName, ITemplate template, long waitTime);
 	
 	/**
 	 * 
+	 * @param channelName TODO
 	 * @param template
 	 * @param waitTime
 	 * @return can return {@code null}
 	 */
-	ITuple take(ITuple template, long waitTime);
+	ITuple take(String channelName, ITemplate template, long waitTime);
 	
 	Iterator<ITuple> listTuples(String channelName);
 
