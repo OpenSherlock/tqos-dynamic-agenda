@@ -144,9 +144,6 @@ System.out.println("INSERTING "+tup.toString());
 		// make a defensive copy of the template tuple
 		ITuple insertTup = tup.copy();
 
-
-System.out.println("INSERT starting to check for match");
-
 		synchronized(this.myTuples) {
 			myTuples.add(tup);
 			myTuples.notify();

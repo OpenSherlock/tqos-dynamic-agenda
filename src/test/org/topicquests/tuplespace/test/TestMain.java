@@ -15,7 +15,7 @@ public class TestMain {
 	public static void main(String[] args) {
 		IDynamicAgenda agenda = new DynamicAgenda();
 		
-		new FirstTest(agenda);
+		new SecondTest();
 	}
 
 }
