@@ -63,7 +63,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.topicquests.tuplespace.api.IConstants;
-import org.topicquests.tuplespace.api.IConstraint;
+import org.topicquests.tuplespace.api.ILogicElement;
+import org.topicquests.tuplespace.api.ITemplate;
 import org.topicquests.tuplespace.api.ITuple;
 
 import java.sql.Timestamp;
@@ -92,7 +93,7 @@ import com.sun.java.util.collections.Set;
  *	added priority
  */
 
-public final class TupleImpl implements ITuple, IConstants {
+public class TupleImpl implements ITuple, IConstants {
 
 	/**
 	 * priority support
@@ -106,7 +107,7 @@ public final class TupleImpl implements ITuple, IConstants {
 	/**
 	 * IConstraint support
 	 */
-	private IConstraint matchConstraint = null;
+//	private IConstraint matchConstraint = null;
         /**
          * Tag is used for the <group> xml value
          * This allows grouping Tuples
@@ -258,27 +259,27 @@ public final class TupleImpl implements ITuple, IConstants {
 		return this.tupleFields.keySet();
 	}
 
-	public boolean matches(final ITuple antiTup){
+	public boolean matches(final ITemplate template){
 		// if this is a constraint-based match, return that
-                boolean isPartialMatch = antiTup.getAllowPartialMatch();
-		IConstraint tupleConstraint = antiTup.getConstraint();
+        boolean isPartialMatch = template.getAllowPartialMatch();
+		ILogicElement tupleConstraint = template.getConstraint();
 		if (tupleConstraint != null) {
 			return tupleConstraint.eval(this);
 		}
 System.out.println("Tuple Match 1 "+isPartialMatch);
-                String g = antiTup.getTag();
+                String g = template.getTag();
                 // if either is a wild card, then keep going
            //     if (!(g.equals("*") || this.getTag().equals("*")))
 	//	  if (g != this.getTag()) return false;
 System.out.println("Tuple Match 2 ");
                 if (!isPartialMatch) {
 System.out.println("Tuple Match 2a ");
-		  if (antiTup.numFields() != this.numFields()) return false;
+		  if (template.numFields() != this.numFields()) return false;
                 }
 System.out.println("Tuple Match 3");
 		Set tKeys = this.fieldNames();
 //System.out.println("SET "+tKeys);
-		Set aKeys = antiTup.fieldNames();
+		Set aKeys = template.fieldNames();
 //System.out.println("SET "+aKeys);
                 if (!isPartialMatch) {
 		  if (!aKeys.containsAll(tKeys)) return false;
@@ -297,7 +298,7 @@ System.out.println("Tuple Match 4");
 		Object tValue;
 		while (antiNames.hasNext()) {
 			fieldName = antiNames.next();
-			aValue = antiTup.get(fieldName);
+			aValue = template.get(fieldName);
       System.out.println("Tuple looking for "+allowPartialMatch+" // "+fieldName+" // "+aValue);
                   /**
                         if (fieldName.equals("*") && aValue.equals("*")) {
@@ -345,15 +346,7 @@ System.out.println("Tuple Match 4");
 		this.tag = newTag;
 	}
 
-	/**
-	 * IConstraint support
-	 */
-	public void setConstraint(IConstraint newConstraint) {
-		this.matchConstraint = newConstraint;
-	}
-	public IConstraint getConstraint() {
-		return this.matchConstraint;
-	}
+
     /**
      * @return tuple encoded as a string:
      *  <tuple>
@@ -409,6 +402,10 @@ System.out.println("Tuple Match 4");
 	@Override
 	public int compareTo(Object o) {
 		return this.getPriority()-((ITuple)o).getPriority();
+	}
+	@Override
+	public Map<String, Object> getFields() {
+		return tupleFields;
 	}
 
 }

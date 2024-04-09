@@ -68,15 +68,15 @@ public interface ITupleSpace
      * @param antiTuple to match
      * @return ITuple or null
      */
-    ITuple noWaitRead(ITuple tuple);
+    ITuple noWaitRead(ITemplate template);
 
-    ITuple read(ITuple tuple, long waitTime);
+    ITuple read(ITemplate template, long waitTime);
 
 
-    ITuple take(ITuple tuple, long waitTime);
+    ITuple take(ITemplate template, long waitTime);
 
 
     Iterator<ITuple> tuples();
     
-    List<ITuple> collect(ITuple antiTup); 
+    List<ITuple> collect(ITemplate template); 
 }

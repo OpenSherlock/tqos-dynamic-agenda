@@ -38,6 +38,12 @@ public interface IDynamicAgenda {
 	
 	/**
 	 * 
+	 * @return
+	 */
+	ITemplate newTemplate();
+	
+	/**
+	 * 
 	 * @param channelName
 	 * @param properties instance of ConcurrentHashMap
 	 * @return

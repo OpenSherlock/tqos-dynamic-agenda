@@ -26,13 +26,14 @@ public class LogicElementImpl implements ILogicElement {
 	 * literal object
 	 */
 	private Object literal = null;
+	
+	private String fieldKey = null;
 	/**
 	 * What type of ILogicElement am I?
 	 */
 	private int myLogicType = -1;
 	/**
-	 * Constructor. Not to be called directly.
-	 * Use tuplespace.api.LogicElementFactory
+	 * Constructor. 
 	 */
 	public LogicElementImpl() {}
 	/**
@@ -117,31 +118,23 @@ public class LogicElementImpl implements ILogicElement {
 		ILogicElement op2 = null;
 		Object obj1 = null;
 		Object obj2 = null;
-		// setup first op
+		String fieldKey = null;
+		// setup first field
 		op1 = (ILogicElement)elements.get(0);
-		if (op1.isLiteral())
-			obj1 = op1.getLiteral();
-		else {
-			obj1 = op1.getFieldName(); // assume it's a FetchLiteralElement
-			if (obj1 == null) return false;
-			obj1 = inTuple.get((String)obj1);
-		}
+		fieldKey = op1.getFieldName();
+		obj2 = inTuple.get(fieldKey);
+		if (obj2.equals(op1.getLiteral())) {
 		// now compare the rest of the elements
-		for (int i = 1; i < elementLength; i++) {
-			// setup second op
-			op2 = (ILogicElement)elements.get(i);
-			if (op2.isLiteral())
-				obj2 = op1.getLiteral();
-			else {
-				obj2 = op2.getFieldName(); // assume it's a FetchLiteralElement
-				if (obj2 == null) return false;
-				obj2 = inTuple.get((String)obj2);
+			for (int i = 1; i < elementLength; i++) {
+				fieldKey = op1.getFieldName();
+				obj2 = inTuple.get(fieldKey);
+				result = obj2.equals(op1.getLiteral());
+				if (!result)
+					return false;
 			}
-			// compare them
-			result = obj1.equals(obj2);
-			if (!result)
-				return false;
-		}
+		} else
+			return false;
+		
 		return result;
 	}
 	/**
@@ -204,14 +197,14 @@ public class LogicElementImpl implements ILogicElement {
 	 * @param String literal name--a field name in a Tuple
 	 */
 	public void setFieldName(String fieldName) {
-		this.literal=fieldName;
+		this.fieldKey=fieldName;
 	}
 	/**
 	 * Get a field name to fetch from a Tuple
 	 * @return String field name from a Tuple
 	 */
 	public String getFieldName() {
-		return (String)this.literal;
+		return this.fieldKey;
 	}
 
 }

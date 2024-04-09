@@ -1,5 +1,7 @@
 package org.topicquests.tuplespace.api;
 
+import java.util.Map;
+
 /*
  * Copyright (c) 2001 Sun Microsystems, Inc.  All rights
  * reserved.
@@ -164,18 +166,15 @@ public interface ITuple extends Comparable {
 	*/
 	Set<String> fieldNames();
 
-	/**
-	 * Clear all fields -- for recycling
-	 */
-	void clearFields();
+	Map<String,Object> getFields();
 
 	/**
-	* Determine whether this tuple is a match for the given anti-tuple
+	* Determine whether this tuple is a match for the given templat
 	* (template).
-	* @param antiTup a ITuple to be used as a template
+	* @param template a ITuple to be used as a template
 	* @return true if the ITuple is a match for the template, false otherwise.
 	*/
-	boolean matches(final ITuple antiTup);
+	boolean matches(final ITemplate template);
 
     /**
      * Identity for each ITuple
@@ -200,16 +199,7 @@ public interface ITuple extends Comparable {
 	 * @return int priority value
 	 */
 	int getPriority();
-	/**
-	 * Set IConstraint for matching
-	 */
-	void setConstraint(IConstraint newConstraint);
-	/**
-	 * Get IConstraint for matching
-	 * @return IConstraint -- a class containing FOL for matching
-	 */
-	IConstraint getConstraint();
-    /**
+   /**
      * @return tuple encoded as a string:
      *  <tuple>
      *    <field>

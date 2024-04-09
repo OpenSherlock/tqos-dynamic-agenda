@@ -10,8 +10,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.topicquests.tuplespace.api.IDynamicAgenda;
+import org.topicquests.tuplespace.api.ITemplate;
 import org.topicquests.tuplespace.api.ITuple;
 import org.topicquests.tuplespace.api.ITupleSpace;
+import org.topicquests.tuplespace.impl.TemplateImpl;
 import org.topicquests.tuplespace.impl.TupleImpl;
 import org.topicquests.tuplespace.impl.TupleSpaceImpl;
 
@@ -42,8 +44,7 @@ public class DynamicAgenda implements IDynamicAgenda{
 
 	@Override
 	public ITuple newTuple(String channelName, Map<String, Object> properties) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TupleImpl(channelName, properties);
 	}
 
 	@Override
@@ -68,6 +69,11 @@ public class DynamicAgenda implements IDynamicAgenda{
 	public Iterator<ITuple> listTuples(String channelName) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public ITemplate newTemplate() {
+		return new TemplateImpl();
 	}
 
 }

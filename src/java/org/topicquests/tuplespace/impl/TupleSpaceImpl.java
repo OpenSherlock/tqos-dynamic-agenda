@@ -67,6 +67,7 @@ import java.util.Map;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.topicquests.tuplespace.api.ITemplate;
 import org.topicquests.tuplespace.api.ITuple;
 import org.topicquests.tuplespace.api.ITupleSpace;
 import java.util.SortedSet;
@@ -157,9 +158,9 @@ System.out.println("INSERT starting to check for match");
 	 * Extract a Tuple matching the template.
 	 * This method "subscribes" a TupleSpaceListener
 	 */
-	public ITuple take(final ITuple antiTup, long t) {
+	public ITuple take(final ITemplate template, long t) {
 		// make a defensive copy of the template tuple
-		ITuple template = antiTup.copy();
+		//ITuple template = antiTup.copy();
 
 		ITuple match = null;
 		boolean firstTry = true;
@@ -177,10 +178,10 @@ System.out.println("INSERT starting to check for match");
 		return match;
 	}
 
-	public ITuple read(final ITuple antiTup, long t) {
+	public ITuple read(final ITemplate template, long t) {
 
 		// make a defensive copy of the template ITuple
-		ITuple template = antiTup.copy();
+		//ITuple template = antiTup.copy();
 
 		ITuple match = null;
 		boolean firstTry = true;
@@ -203,21 +204,20 @@ System.out.println("INSERT starting to check for match");
      * @param template ITuple
      * @return List of matching Tuples or empty list
      */
-    public List<ITuple> collect(ITuple antiTup) {
+    public List<ITuple> collect(final ITemplate template) {
 	// make a defensive copy of the template ITuple
-	ITuple template = antiTup.copy();
-            return getMatches(template);
+	//ITuple template = antiTup.copy();
+           return getMatches(template);
     }
 
     /**
      * @param antiTuple to match
      * @return ITuple or null
      */
-	public ITuple noWaitRead(final ITuple antiTup) {
+	public ITuple noWaitRead(final ITemplate template) {
 
 		// make a defensive copy of the template ITuple
-		ITuple template = antiTup.copy();
-System.out.println("READING "+antiTup.toString());
+		//ITuple template = antiTup.copy();
 		return getMatch(template, false);
 	}
 
@@ -226,7 +226,7 @@ System.out.println("READING "+antiTup.toString());
 	/************************* Private methods *************************/
 
 
-	private ITuple getMatch(ITuple template, boolean destroy) {
+	private ITuple getMatch(ITemplate template, boolean destroy) {
 
 		synchronized(myTuples) {
 			Iterator tuples = myTuples.iterator();
@@ -248,7 +248,7 @@ System.out.println("READING "+antiTup.toString());
 			return null;
 		}
 	}
-	private List<ITuple> getMatches(ITuple template) {
+	private List<ITuple> getMatches(final ITemplate template) {
           List<ITuple> result = new ArrayList<ITuple>();
 		synchronized(myTuples) {
 			Iterator<ITuple> tuples = myTuples.iterator();
