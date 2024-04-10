@@ -72,4 +72,22 @@ public interface IDynamicAgenda {
 	
 	Iterator<ITuple> listTuples(String channelName);
 
+	//////////////////////
+	// Priority
+	//////////////////////
+	
+	/**
+	 * Runs on all tuples in all channels
+	 * @param howMuch
+	 */
+	void decayAll(int howMuch);
+	
+	/**
+	 * 
+	 * @param channelName if {@code null} runs on all channels
+	 * @param template
+	 * @param howMuch can be positive or negative
+	 */
+	void addValue(String channelName, ITemplate template, int howMuch);
+
 }

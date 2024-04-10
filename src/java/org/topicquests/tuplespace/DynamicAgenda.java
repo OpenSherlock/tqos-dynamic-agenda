@@ -76,4 +76,16 @@ public class DynamicAgenda implements IDynamicAgenda{
 		return new TemplateImpl();
 	}
 
+	@Override
+	public void decayAll(int howMuch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addValue(String channelName, ITemplate template, int howMuch) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
