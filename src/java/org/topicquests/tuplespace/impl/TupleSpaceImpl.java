@@ -87,12 +87,11 @@ import java.util.TreeSet;
 /**
  * @author Jack Park
  *
- *	Major revision to handle two types of spaces:
- *		classical
+ *	Major revision to handle 
  *		prioritized (sorted by priority)
- *	Major revision to handle IConstraint (First Order Logic) matching
+ *	Major revision to handle IFieldLogic (First Order Logic) matching
  *
- *	note: prioritized space uses only Tuple.tag for matching
+ *	note: prioritized space uses only Tuple.priority for matching
  */
 public final class TupleSpaceImpl implements ITupleSpace {
 
@@ -110,8 +109,7 @@ public final class TupleSpaceImpl implements ITupleSpace {
     boolean isRunning = true;
 
 	/**
-	* Constructor. Normally never called directly.
-	* Use TupleSpaceFactory.getSpace() instead.
+	* @param name
 	*/
 	public TupleSpaceImpl(String name) {
 		this.spaceName = name;
@@ -128,15 +126,6 @@ public final class TupleSpaceImpl implements ITupleSpace {
 
     /**
      * @param Tuple to insert into this TupleSpace
-     * Tuple's tag (group) could be a "*" which would then
-     * become a valid group "*" -- a don't care
-     * Note: "*" is the default tag (group) for a Tuple
-     *
-     * Tuples now have a Timestamp
-     * They should be sorted latest last
-     * Actually, they are added to the end of the list so they are
-     * already sorted!
-     * Read/Take should take from the front of the List
      *
      */
 	public void insert(final ITuple tup) {
@@ -156,8 +145,6 @@ System.out.println("INSERTING "+tup.toString());
 	 * This method "subscribes" a TupleSpaceListener
 	 */
 	public ITuple take(final ITemplate template, long t) {
-		// make a defensive copy of the template tuple
-		//ITuple template = antiTup.copy();
 
 		ITuple match = null;
 		boolean firstTry = true;
@@ -177,17 +164,9 @@ System.out.println("INSERTING "+tup.toString());
 
 	public ITuple read(final ITemplate template, long t) {
 
-		// make a defensive copy of the template ITuple
-		//ITuple template = antiTup.copy();
-
 		ITuple match = null;
-		boolean firstTry = true;
 		synchronized (template) {
-			while ((match = getMatch(template, false)) == null) {
-				if (firstTry) {
-					//store(template, templateMap);
-					firstTry = false;
-				}
+			if ((match = getMatch(template, false)) == null) {				
 				try {
 						template.wait(t);
 						return getMatch(template, false); // we only get one try
@@ -202,9 +181,7 @@ System.out.println("INSERTING "+tup.toString());
      * @return List of matching Tuples or empty list
      */
     public List<ITuple> collect(final ITemplate template) {
-	// make a defensive copy of the template ITuple
-	//ITuple template = antiTup.copy();
-           return getMatches(template);
+    	return getMatches(template);
     }
 
     /**
@@ -212,9 +189,6 @@ System.out.println("INSERTING "+tup.toString());
      * @return ITuple or null
      */
 	public ITuple noWaitRead(final ITemplate template) {
-
-		// make a defensive copy of the template ITuple
-		//ITuple template = antiTup.copy();
 		return getMatch(template, false);
 	}
 
@@ -223,20 +197,20 @@ System.out.println("INSERTING "+tup.toString());
 	/************************* Private methods *************************/
 
 
-	private ITuple getMatch(ITemplate template, boolean destroy) {
+	private ITuple getMatch(final ITemplate template, boolean destroy) {
 
 		synchronized(myTuples) {
-			Iterator tuples = myTuples.iterator();
+			Iterator<ITuple> tuples = myTuples.iterator();
 			ITuple curTuple = null;
 			while (tuples.hasNext()) {
-				curTuple = (ITuple)tuples.next();
+				curTuple = tuples.next();
     System.out.println("MATCHING "+curTuple.toString());
     System.out.println("MATCHING To "+template.toString());
 				if (curTuple.matches(template)) {
     System.out.println("MATCHING GOT MATCH");
 					if (destroy)
-						tuples.remove(); // extract the tuple if appropriate
-					curTuple.setRequestId(template.getRequestId());
+						myTuples.remove(curTuple); // extract the tuple if appropriate
+					
                     return curTuple.copy();
 				}
 			}
@@ -256,7 +230,6 @@ System.out.println("INSERTING "+tup.toString());
     System.out.println("MATCHING To "+template.toString());
 				if (curTuple.matches(template)) {
     System.out.println("MATCHING GOT MATCH");
-					curTuple.setRequestId(template.getRequestId());
                     result.add(curTuple.copy());
 				}
 			}	

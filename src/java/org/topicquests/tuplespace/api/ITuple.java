@@ -85,12 +85,7 @@ import com.sun.java.util.collections.Iterator;
  */
 public interface ITuple extends Comparable {
 
-    /**
-     * Features added to let ITuple know it's command -- put, take, read
-     */
-    String getCommand();
-    void setCommand(String cmd);
-    /**
+     /**
      * Features added to let ITuple know it's ITupleSpace name
      */
     String getSpace();
@@ -101,18 +96,6 @@ public interface ITuple extends Comparable {
 	* @return an exact replica of this ITuple
 	*/
 	ITuple copy();
-
-    /**
-     * Timestamp support
-     */
-    Timestamp getCreated();
-    void setCreated(Timestamp ts);
-
-    /**
-     * Transaction support <requestId>
-     */
-    String getRequestId();
-    void setRequestId(String id);
     
 	/**
 	* Gets the tag associated with this ITuple.
@@ -140,20 +123,6 @@ public interface ITuple extends Comparable {
 	*/
 	Object get(String name);
 
-	/**
-	* Return a hash value for this ITuple such that all Tuples with the
-	* same "signature" (same tag, same number and type of fields)
-	* hash to the same value. Distinct from hashCode(), which would
-	* generate a unique hash for every unique ITuple. Ideally tuples/templates
-	* with different signatures should hash to different values to optimize
-	* storage in collections, but it isn't required.
-	* @return an Object, most likely a String or an Integer
-        *
-        * In the current version, hash == tag, which is the "group" to which
-        * the ITuple is assigned, which defaults to "*"
-        * hash is always a String
-	**/
-	Object hash();
 
 	/**
 	* Get the number of fields in this ITuple.
@@ -182,13 +151,6 @@ public interface ITuple extends Comparable {
     void setID(String id);
     String getID();
 
-    /**
-     * Allow for partial matching
-     * If true, only the fields in the AntiTuple need match
-     * no matter how many other fields are present
-     */
-    void setAllowPartialMatch(boolean tf);
-    boolean getAllowPartialMatch();
 	/**
 	 * Set priority value
 	 * @param int priority
@@ -210,15 +172,4 @@ public interface ITuple extends Comparable {
      *   </tuple>
      */
     String toString();
-    /**
-     * Speedup:
-     * @param ITuple that matches
-     */
-    void setMatch(ITuple match);
-    /**
-     *
-     * Speedup:
-     * @return matching ITuple
-     */
-    ITuple getMatch();
 }

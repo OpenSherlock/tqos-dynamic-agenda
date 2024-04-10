@@ -35,8 +35,8 @@ public class TemplateImpl extends TupleImpl implements ITemplate {
 
 	@Override
 	public void compile() {
-		ILogicElement root = new LogicElementImpl();
-		root.isAndType();
+		constraint = new LogicElementImpl();
+		constraint.isAndType();
 		Map<String,Object> data = this.getFields();
 		String key;
 		Object val;
@@ -49,7 +49,7 @@ public class TemplateImpl extends TupleImpl implements ITemplate {
 			x.isEqualsType();
 			x.setFieldName(key);
 			x.setLiteral(val);
-			root.addElement(x);
+			constraint.addElement(x);
 		}
 
 

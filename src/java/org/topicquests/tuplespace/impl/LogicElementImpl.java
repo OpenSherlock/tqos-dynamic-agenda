@@ -112,30 +112,12 @@ public class LogicElementImpl implements ILogicElement {
 	 * @return boolean true if match occurs
 	 */
 	public boolean evalEQUALS(ITuple inTuple) {
-		boolean result = true;
-		int elementLength = elements.size();
-		ILogicElement op1 = null;
-		ILogicElement op2 = null;
-		Object obj1 = null;
 		Object obj2 = null;
 		String fieldKey = null;
 		// setup first field
-		op1 = (ILogicElement)elements.get(0);
-		fieldKey = op1.getFieldName();
+		fieldKey = this.getFieldName(); //.getFieldName();
 		obj2 = inTuple.get(fieldKey);
-		if (obj2.equals(op1.getLiteral())) {
-		// now compare the rest of the elements
-			for (int i = 1; i < elementLength; i++) {
-				fieldKey = op1.getFieldName();
-				obj2 = inTuple.get(fieldKey);
-				result = obj2.equals(op1.getLiteral());
-				if (!result)
-					return false;
-			}
-		} else
-			return false;
-		
-		return result;
+		return (obj2.equals(this.getLiteral()));
 	}
 	/**
 	 * The NOT interpreter

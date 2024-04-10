@@ -186,18 +186,6 @@ public class TupleImpl implements ITuple, IConstants {
       this.requestId = id;
     }
 
-    /**
-     * Allow for partial matching
-     * If true, only the fields in the AntiTuple need match
-     * no matter how many other fields are present
-     */
-    public void setAllowPartialMatch(boolean tf) {
-      allowPartialMatch = tf;
-    }
-    public boolean getAllowPartialMatch() {
-      return allowPartialMatch;
-    }
-
 	/**
 	* This constructor is normally not called by applications.
 	* Use TupleFactory.create() instead.
@@ -241,16 +229,6 @@ public class TupleImpl implements ITuple, IConstants {
 		return this.tupleFields.get(name);
 	}
 
-	/**
-	* Templates and tuples of the same type
-	*  must return the same hash value.
-	*/
-	public Object hash() {
-		// brain-dead, totally non-optimized hash
-		// This definitely needs replacing.
-		return this.getTag();
-	}
-
 	public int numFields() {
 		return this.fieldCount;
 	}
@@ -261,70 +239,13 @@ public class TupleImpl implements ITuple, IConstants {
 
 	public boolean matches(final ITemplate template){
 		// if this is a constraint-based match, return that
-        boolean isPartialMatch = template.getAllowPartialMatch();
 		ILogicElement tupleConstraint = template.getConstraint();
+		System.out.println("StartingMatch "+tupleConstraint);
 		if (tupleConstraint != null) {
 			return tupleConstraint.eval(this);
 		}
-System.out.println("Tuple Match 1 "+isPartialMatch);
-                String g = template.getTag();
-                // if either is a wild card, then keep going
-           //     if (!(g.equals("*") || this.getTag().equals("*")))
-	//	  if (g != this.getTag()) return false;
-System.out.println("Tuple Match 2 ");
-                if (!isPartialMatch) {
-System.out.println("Tuple Match 2a ");
-		  if (template.numFields() != this.numFields()) return false;
-                }
-System.out.println("Tuple Match 3");
-		Set tKeys = this.fieldNames();
-//System.out.println("SET "+tKeys);
-		Set aKeys = template.fieldNames();
-//System.out.println("SET "+aKeys);
-                if (!isPartialMatch) {
-		  if (!aKeys.containsAll(tKeys)) return false;
-                }
-System.out.println("Tuple Match 4");
-
-		// iterate through the fields in the antiTuple
-		// the tuple matches if: all fields have the same names and types;
-		// all non-null fields in the antituple have the same values
-		// in the tuple
-
-		Iterator<String> antiNames = aKeys.iterator();
-//		Iterator<String> tupNames = tKeys.iterator();
-		String fieldName;
-		Object aValue;
-		Object tValue;
-		while (antiNames.hasNext()) {
-			fieldName = antiNames.next();
-			aValue = template.get(fieldName);
-      System.out.println("Tuple looking for "+allowPartialMatch+" // "+fieldName+" // "+aValue);
-                  /**
-                        if (fieldName.equals("*") && aValue.equals("*")) {
-                          // we found a wild card field which ends the search
-                          return true;
-                        }
-                  */
-                        ///////////////////////////////////
-                        // FIXME: need to deal with wildcard fieldName or aValue
-                        ///////////////////////////////////
-			if (aValue == null) continue;
-			tValue = this.get(fieldName);
-			if (tValue == null)
-				return false; // should never get here because we compared the key sets above
-			// are the fields instances of the same class?
-                        // all values are Strings
-		//	if (tValue.getClass().getName() == aValue.getClass().getName()) {
-				if (!(aValue.equals(tValue))) return false;
-		//	}
-		//	else {
-		//		return false;
-		//	}
-		}
-		// if you made it this far, it's a match
-		return true;
-
+		System.out.println("Should not be here/n"+this.toString());
+		return false;
 	}
 
 	/**
@@ -361,7 +282,6 @@ System.out.println("Tuple Match 4");
       buf.append("  <"+GROUP+">"+tag+"</"+GROUP+">\n");
       if (command != null)
         buf.append("  <"+DO+">"+command+"</"+DO+">\n");
-      buf.append("  <"+REQUEST_ID+">"+requestId+"</"+REQUEST_ID+">\n");
       if (allowPartialMatch)
         buf.append("  <"+PARTIAL_MATCH+"/>\n");
       Set keys = tupleFields.keySet();
@@ -379,24 +299,11 @@ System.out.println("Tuple Match 4");
       buf.append("</"+TUPLE+">\n");
       return buf.toString();
     }
-        /**
-     * Speedup:
-     * @param ITuple that matches
-     */
-    public void setMatch(ITuple match) {
-      this.matchTuple = match;
-    }
-    /**
-     *
-     * Speedup:
-     * @return matching Tuple
-     */
-    public ITuple getMatch() {
-      return this.matchTuple;
-    }
 	@Override
 	public int compareTo(Object o) {
-		return this.getPriority()-((ITuple)o).getPriority();
+		int pri = ((ITuple)o).getPriority();
+//		System.out.println("Comparing "+this.getPriority()+" to "+pri);
+		return pri - this.getPriority();
 	}
 	@Override
 	public Map<String, Object> getFields() {

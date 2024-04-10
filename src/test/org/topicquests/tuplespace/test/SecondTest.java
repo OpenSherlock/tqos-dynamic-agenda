@@ -47,6 +47,7 @@ public class SecondTest extends BaseTest {
 		p.put(FLD_1, VAL_1);
 		p.put(FLD_2, VAL_2);
 		ITemplate tx = TupleUtil.createTemplate(p);
+		tx.compile();
 		ITuple mx1 = agenda.take(name, tx, 1000);
 		System.out.println(mx1.toString());
 
