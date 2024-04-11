@@ -78,14 +78,32 @@ public class DynamicAgenda implements IDynamicAgenda{
 
 	@Override
 	public void decayAll(int howMuch) {
-		// TODO Auto-generated method stub
-		
+		ITupleSpace ts;
+		ITuple t;
+		Iterator<ITupleSpace> itr = channels.values().iterator();
+		Iterator<ITuple> itx;
+		while (itr.hasNext()) {
+			ts = itr.next();
+			itx =ts.tuples();
+			while (itx.hasNext()) {
+				t = itx.next();
+				int p = t.getPriority() ;
+				p += howMuch;
+				t.setPriority(p);
+			}
+		}
 	}
 
 	@Override
 	public void addValue(String channelName, ITemplate template, int howMuch) {
-		// TODO Auto-generated method stub
-		
+		ITupleSpace c = getChannel(channelName);
+		ITuple t = c.read(template, 10000);
+		if (t != null) {
+			int p = t.getPriority() ;
+			p += howMuch;
+			t.setPriority(p);
+		}
+		else throw new RuntimeException("Add Value missing tuple match "+template.toString());
 	}
 
 }

@@ -74,6 +74,7 @@ public interface IDynamicAgenda {
 
 	//////////////////////
 	// Priority
+	// uses ITuple.get/setPriority
 	//////////////////////
 	
 	/**
