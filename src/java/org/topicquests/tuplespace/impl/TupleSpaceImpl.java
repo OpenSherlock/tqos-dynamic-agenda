@@ -58,14 +58,8 @@ package org.topicquests.tuplespace.impl;
  */
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Iterator;
-import java.util.Set;
 
 import org.topicquests.tuplespace.api.ITemplate;
 import org.topicquests.tuplespace.api.ITuple;
@@ -235,6 +229,11 @@ System.out.println("INSERTING "+tup.toString());
 			}	
 		}
         return result;
+	}
+
+	@Override
+	public boolean internalRemove(ITuple tuple) {
+		return myTuples.remove(tuple);
 	}
 
 }

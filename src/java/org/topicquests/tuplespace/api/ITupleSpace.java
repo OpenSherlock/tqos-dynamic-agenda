@@ -75,7 +75,8 @@ public interface ITupleSpace
 
     ITuple take(ITemplate template, long waitTime);
 
-
+    boolean internalRemove(ITuple tuple);
+    
     Iterator<ITuple> tuples();
     
     List<ITuple> collect(ITemplate template); 

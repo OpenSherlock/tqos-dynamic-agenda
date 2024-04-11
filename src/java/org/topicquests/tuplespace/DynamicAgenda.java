@@ -87,9 +87,11 @@ public class DynamicAgenda implements IDynamicAgenda{
 			itx =ts.tuples();
 			while (itx.hasNext()) {
 				t = itx.next();
+				boolean rem = ts.internalRemove(t);
 				int p = t.getPriority() ;
 				p += howMuch;
 				t.setPriority(p);
+				ts.insert(t);
 			}
 		}
 	}
@@ -99,9 +101,13 @@ public class DynamicAgenda implements IDynamicAgenda{
 		ITupleSpace c = getChannel(channelName);
 		ITuple t = c.read(template, 10000);
 		if (t != null) {
-			int p = t.getPriority() ;
+			boolean rem = c.internalRemove(t);
+			int p = t.getPriority();
+			System.out.println("Pbefore "+rem+p);
 			p += howMuch;
+			System.out.println("Pafter "+p);
 			t.setPriority(p);
+			c.insert(t);
 		}
 		else throw new RuntimeException("Add Value missing tuple match "+template.toString());
 	}
