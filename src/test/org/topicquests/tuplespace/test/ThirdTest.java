@@ -37,7 +37,12 @@ public class ThirdTest extends BaseTest {
 		tups = agenda.listTuples(name);
 		while (tups.hasNext()) 
 			System.out.println(tups.next().toString());
-		
+		// now decay all
+		agenda.decayAll(3);
+		System.out.println("DECAY");
+		tups = agenda.listTuples(name);
+		while (tups.hasNext()) 
+			System.out.println(tups.next().toString());
 
 	}
 

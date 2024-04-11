@@ -6,6 +6,8 @@
 package org.topicquests.tuplespace;
 
 import java.util.Iterator;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,8 +19,9 @@ import org.topicquests.tuplespace.impl.TemplateImpl;
 import org.topicquests.tuplespace.impl.TupleImpl;
 import org.topicquests.tuplespace.impl.TupleSpaceImpl;
 
-import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * @author jackpark
+ */
 public class DynamicAgenda implements IDynamicAgenda{
 	private Map<String, ITupleSpace> channels;
 	
@@ -81,18 +84,30 @@ public class DynamicAgenda implements IDynamicAgenda{
 		ITupleSpace ts;
 		ITuple t;
 		Iterator<ITupleSpace> itr = channels.values().iterator();
-		Iterator<ITuple> itx;
+		Iterator<ITuple> itx, ditr;
+		List<ITuple> did, torem;
 		while (itr.hasNext()) {
+			System.out.println("A");
+			torem = new ArrayList<ITuple>();
+			did = new ArrayList<ITuple>();
 			ts = itr.next();
 			itx =ts.tuples();
 			while (itx.hasNext()) {
+				System.out.println("B");
 				t = itx.next();
-				boolean rem = ts.internalRemove(t);
+				torem.add(t);
 				int p = t.getPriority() ;
-				p += howMuch;
+				p -= howMuch;
 				t.setPriority(p);
-				ts.insert(t);
+				did.add(t);
 			}
+			ditr = torem.iterator();
+			while (ditr.hasNext())
+				ts.internalRemove(ditr.next());
+
+			ditr = did.iterator();
+			while (ditr.hasNext())
+				ts.insert(ditr.next());
 		}
 	}
 
